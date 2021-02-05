@@ -1,0 +1,240 @@
+<mat-toolbar fxLayout="row" color="primary" class="mat-elevation-z4 custom">
+  <span fxFlex>Landing Page</span>
+  <button
+    mat-button
+    *ngFor="let item of menuItems"
+    fxHide.xs
+    [ngxScrollTo]="item.nombre"
+  >
+    <mat-icon class="mr">{{ item.icono }}</mat-icon>
+    {{ item.nombre }}
+  </button>
+  <button mat-icon-button [matMenuTriggerFor]="dropMenu" fxHide fxShow.xs>
+    <mat-icon>more_vert</mat-icon>
+  </button>
+  <mat-menu #dropMenu="matMenu">
+    
+    <button mat-menu-item *ngFor="let item of menuItems" [ngxScrollTo]="item.nombre">
+      <mat-icon class="mr">{{ item.icono }}</mat-icon>
+      {{ item.nombre }}
+    </button>
+    <mat-divider></mat-divider>
+  </mat-menu>
+</mat-toolbar>
+<div class="space"></div>
+<div class="container">
+  <section id="Inicio" class="row sec-spacer">
+    <div class="col-lg-6">
+      <h1 class="ml2">New Music App!</h1>
+      <p>{{ lorem2 }}</p>
+    </div>
+    <div class="col-lg-6">
+      <img src="../assets/images/player_2x.png" class="cover-bg fade-in" />
+    </div>
+  </section>
+  <section id="Nosotros" class="sec-spacer">
+    <h2>Nosotros</h2>
+    <div class="col-lg-12">
+      <p>{{ lorem2 }}</p>
+    </div>
+  </section>
+
+  <section id="Musica" class="row sec-spacer">
+    <div class="col-lg-6">
+      <h2>
+        La mejor musica,
+        <strong>Siempre</strong>
+      </h2>
+      <p>{{ lorem1 }}</p>
+    </div>
+    <div class="col-lg-6">
+      <mat-card class="music-card">
+        <mat-card-header>
+          <div mat-card-avatar class="music-header-image"></div>
+          <mat-card-title>{{ enCurso.name }}</mat-card-title>
+          <mat-card-subtitle>{{ enCurso.artistName }}</mat-card-subtitle>
+        </mat-card-header>
+        <img
+          mat-card-image
+          src="http://direct.rhapsody.com/imageserver/v2/albums/{{
+            enCurso.albumId
+          }}/images/300x300.jpg"
+        />
+
+        <mat-card-content>
+          <div>
+            <mat-hint> {{ statusTrack?.readableCurrentTime }}</mat-hint>
+            
+            
+            
+          </div>
+          <mat-slider
+            class="track-duration"
+            [max]="statusTrack?.duration"
+            step="1"
+            [value]="statusTrack?.currentTime"
+            (input)="seek($event)"
+          ></mat-slider>
+
+          <div>
+            <button
+              mat-mini-fab
+              color="primary"
+              class="btn-control"
+              (click)="back()"
+            >
+              <mat-icon>skip_previous</mat-icon>
+            </button>
+            <button mat-fab color="primary" (click)="playOrPause()">
+              <mat-icon *ngIf="!statusTrack?.play">play_circle</mat-icon>
+              <mat-icon *ngIf="statusTrack?.play">pause</mat-icon>
+            </button>
+
+            <button
+              mat-mini-fab
+              color="primary"
+              class="btn-control"
+              (click)="next()"
+            >
+              <mat-icon>skip_next</mat-icon>
+            </button>
+          </div>
+        </mat-card-content>
+        <mat-card-actions>
+          <mat-list role="list" class="track-list">
+            <mat-list-item role="listitem">
+              <mat-form-field appearance="outline" class="mat-input-width">
+                <mat-label>Busqueda</mat-label>
+                <input
+                  matInput
+                  placeholder="Busqueda"
+                  [(ngModel)]="querySearch"
+                  (input)="onChangeEvent(querySearch)"
+                />
+                <mat-icon matSuffix>search</mat-icon>
+              </mat-form-field>
+            </mat-list-item>
+            <mat-list-item role="listitem" *ngFor="let item of filteredTraks">
+              <button mat-button (click)="changeTrack(item)">
+                {{ item.name }}
+                <mat-icon>play_circle</mat-icon>
+              </button>
+            </mat-list-item>
+          </mat-list>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </section>
+
+  <section id="Contacto" class="sec-spacer">
+    <h1>Contacto</h1>
+    <mat-card>
+      <mat-card-title>Tu Ubicación</mat-card-title>
+      <google-map width="100%" height="450px" [center]="center" [zoom]="zoom">
+        <map-marker [position]="center"></map-marker>
+      </google-map>
+    </mat-card>
+
+    <br />
+
+    <mat-card>
+      <form novalidate [formGroup]="nuevaSuscripcion" autocomplete="off">
+        <mat-card-title>Regístrate</mat-card-title>
+        <mat-card-content class="row">
+          <mat-form-field class="col-lg-12" appearance="outline">
+            <mat-label>Nombre/s</mat-label>
+            <input
+              matInput
+              placeholder="Nombre"
+              matInput
+              formControlName="nombre"
+            />
+            <mat-error
+              *ngIf="nuevaSuscripcion.get('nombre')?.hasError('required')"
+            >
+              El nombre es
+              <strong>requerido</strong>
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="col-lg-6" appearance="outline">
+            <mat-label>Apellido Paterno</mat-label>
+            <input
+              matInput
+              placeholder="Apellido Paterno"
+              matInput
+              formControlName="apaterno"
+            />
+            <mat-error
+              *ngIf="nuevaSuscripcion.get('apaterno')?.hasError('required')"
+            >
+              El Apellido Paterno es
+              <strong>requerido</strong>
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="col-lg-6" appearance="outline">
+            <mat-label>Apellido Materno</mat-label>
+            <input
+              matInput
+              placeholder="Apellido Materno"
+              matInput
+              formControlName="amaterno"
+            />
+            <mat-error
+              *ngIf="nuevaSuscripcion.get('amaterno')?.hasError('required')"
+            >
+              El Apellido Materno es
+              <strong>requerido</strong>
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="col-lg-6" appearance="outline">
+            <mat-label>email</mat-label>
+            <input
+              matInput
+              placeholder="Apellido Materno"
+              matInput
+              formControlName="email"
+            />
+            <mat-error
+              *ngIf="nuevaSuscripcion.get('email')?.hasError('required')"
+            >
+              El email es
+              <strong>requerido</strong>
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="col-md-12" appearance="outline">
+            <mat-label>Notas</mat-label>
+
+            <textarea
+              matInput
+              placeholder="Notas"
+              matInput
+              formControlName="notas"
+              appUppercase
+              style="resize: none;"
+              rows="5"
+              maxlength="250"
+            ></textarea>
+            <mat-hint>{{ 250 - nuevaSuscripcion.value.notas.length }}</mat-hint>
+          </mat-form-field>
+        </mat-card-content>
+        <mat-card-actions>
+          <button
+            mat-raised-button
+            type="submit"
+            color="primary"
+            (click)="guardar()"
+            [class.spinner]="formEnviado"
+            [disabled]="formEnviado"
+          >
+            Guardar
+            <span class=""></span>
+          </button>
+        </mat-card-actions>
+      </form>
+    </mat-card>
+  </section>
+</div>
+
+<br />
+<br />
